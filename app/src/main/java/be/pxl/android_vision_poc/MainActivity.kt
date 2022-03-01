@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -26,20 +25,19 @@ class MainActivity : AppCompatActivity() {
 
     private val imageAnalyzer by lazy {
         ImageAnalysis.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
             .build()
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageAnalyzer(
-                        ImageClassifier()
-                    )
+                    ImageAnalyzer(ImageObjectDetector(this))
                 )
             }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
@@ -56,34 +54,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener(
+            {
+                val preview = Preview.Builder()
+                    .build()
+                    .also { it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider) }
+                cameraProviderFuture.get().bind(preview, imageAnalyzer)
+            },
+            ContextCompat.getMainExecutor(this)
+        )
+    }
 
-        cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            // Preview
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
-                }
-
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
-
-            } catch(exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
-            }
-
-        }, ContextCompat.getMainExecutor(this))
+    private fun ProcessCameraProvider.bind(
+        preview: Preview,
+        analyzer: ImageAnalysis
+    ) = try {
+        unbindAll()
+        bindToLifecycle(
+            this@MainActivity,
+            CameraSelector.DEFAULT_BACK_CAMERA,
+            preview,
+            analyzer
+        )
+    } catch(exc: Exception) {
+        Log.e(TAG, "Use case binding failed", exc)
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

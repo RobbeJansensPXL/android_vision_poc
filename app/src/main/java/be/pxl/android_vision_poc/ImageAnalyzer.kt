@@ -1,20 +1,23 @@
 package be.pxl.android_vision_poc
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.google.mlkit.vision.common.InputImage
+import org.tensorflow.lite.support.image.TensorImage
 
-class ImageAnalyzer(
-    private val imageClassifier: ImageClassifier
-) : ImageAnalysis.Analyzer {
+
+class ImageAnalyzer(private val objectDetector: ImageObjectDetector) : ImageAnalysis.Analyzer {
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
-        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-        val image = imageProxy.image
-        if(image != null) {
-            val inputImage = InputImage.fromMediaImage(image, rotationDegrees)
+        if (imageProxy.image != null) {
+            val targetImage = imageProxy.image!!
+            val targetBitmap = Bitmap.createBitmap(targetImage.width, targetImage.height, Bitmap.Config.ARGB_8888)
+
+            val tensorImage = TensorImage.fromBitmap(targetBitmap)
+
+            objectDetector.detectObjects(tensorImage)
+            imageProxy.close()
         }
-        imageProxy.close()
     }
 }
