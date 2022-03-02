@@ -1,9 +1,10 @@
 package be.pxl.android_vision_poc
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import org.tensorflow.lite.task.vision.detector.Detection
 
@@ -28,8 +29,6 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
     fun drawDetections(detections: List<Detection>) {
         this.detections.clear()
         this.detections.addAll(detections)
-        Log.d("width", this.width.toString())
-        Log.d("height", this.height.toString())
         invalidate()
     }
 }

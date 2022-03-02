@@ -2,13 +2,13 @@ package be.pxl.android_vision_poc
 
 import android.content.Context
 import android.util.Log
-import androidx.viewbinding.ViewBinding
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
 
 class ImageObjectDetector(private val context: Context, val detectionDrawer: DetectionDrawer) {
     private val baseOptions = BaseOptions.builder().useGpu().build()
+    private var previousTime = System.currentTimeMillis()
 
     private val detectorOptions = ObjectDetector.ObjectDetectorOptions.builder()
         .setBaseOptions(baseOptions)
@@ -26,9 +26,9 @@ class ImageObjectDetector(private val context: Context, val detectionDrawer: Det
     fun detectObjects(tensorImage: TensorImage) {
         val results = objectDetector.detect(tensorImage)
         detectionDrawer.drawDetections(results)
-        for (detection in results) {
-            Log.d("Detection", detection.boundingBox.toShortString())
-        }
-        Log.d("Detection_Results", results.toString())
+
+        val delta = System.currentTimeMillis() - previousTime
+        Log.d("FPS", (1000.0 / delta).toString())
+        previousTime = System.currentTimeMillis()
     }
 }
