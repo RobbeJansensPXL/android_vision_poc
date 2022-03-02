@@ -3,6 +3,7 @@ package be.pxl.android_vision_poc
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -17,6 +18,7 @@ import be.pxl.android_vision_poc.databinding.ActivityMainBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+
 class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
@@ -25,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
     private val imageAnalyzer by lazy {
         ImageAnalysis.Builder()
-            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
             .build()
             .also {
                 it.setAnalyzer(

@@ -11,13 +11,13 @@ class ImageObjectDetector(context: Context) {
 
     private val detectorOptions = ObjectDetector.ObjectDetectorOptions.builder()
         .setBaseOptions(baseOptions)
-        .setScoreThreshold(0.5f)
+        .setScoreThreshold(0.7f)
         .build()
 
     private val objectDetector by lazy {
         ObjectDetector.createFromFileAndOptions(
             context, // the application context
-            "test2.tflite", // must be same as the filename in assets folder
+            "beer_bottles.tflite", // must be same as the filename in assets folder
             detectorOptions
         )
     }
