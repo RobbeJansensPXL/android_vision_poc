@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageAnalyzer(ImageObjectDetector(this))
+                    ImageProcessor(ImageObjectDetector(this, this.findViewById(R.id.detectionDrawer)))
                 )
             }
     }
