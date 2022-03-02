@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        supportActionBar?.hide()
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
