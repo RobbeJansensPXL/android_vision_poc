@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private val imageAnalyzer by lazy {
         ImageAnalysis.Builder()
-            .setTargetAspectRatio(RATIO_16_9)
+            .setTargetAspectRatio(RATIO_4_3)
             .build()
             .also {
                 it.setAnalyzer(
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         cameraProviderFuture.addListener(
             {
                 val preview = Preview.Builder()
-                    .setTargetAspectRatio(RATIO_16_9)
+                    .setTargetAspectRatio(RATIO_4_3)
                     .build()
                     .also { it.setSurfaceProvider(viewBinding.pvCameraPreview.surfaceProvider) }
                 cameraProviderFuture.get().bind(preview, imageAnalyzer)

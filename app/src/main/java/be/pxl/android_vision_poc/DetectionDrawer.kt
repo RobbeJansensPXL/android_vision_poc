@@ -20,10 +20,10 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
         super.onDraw(canvas)
         detections.forEach {
             canvas.drawRect(
-                it.boundingBox.left / 720 * this.width,
-                it.boundingBox.top / 1280 * this.height,
-                it.boundingBox.right / 720 * this.width,
-                it.boundingBox.bottom / 1280 * this.height, paint)
+                it.boundingBox.left / 480 * this.width,
+                it.boundingBox.top / 640 * this.height,
+                it.boundingBox.right / 480 * this.width,
+                it.boundingBox.bottom / 640 * this.height, paint)
         }
     }
 

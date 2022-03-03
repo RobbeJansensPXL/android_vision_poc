@@ -13,9 +13,6 @@ class ImageProcessor(private val imageDetection: ImageDetectionInterface) : Imag
         if (imageProxy.image != null) {
             val targetImage = imageProxy.image!!.toBitmap()
 
-            Log.d("width", targetImage.width.toString())
-            Log.d("Height", targetImage.height.toString())
-
             val image = targetImage.rotate(imageProxy.imageInfo.rotationDegrees.toFloat())
 
             val tensorImage = TensorImage.fromBitmap(image)
