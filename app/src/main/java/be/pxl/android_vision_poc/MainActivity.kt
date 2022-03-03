@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageProcessor(ImageClassifier(this, this.findViewById(R.id.detectionDrawer)))
+                    ImageProcessor(ImageObjectSegmenter(this, this.findViewById(R.id.detectionDrawer)))
                 )
             }
     }
