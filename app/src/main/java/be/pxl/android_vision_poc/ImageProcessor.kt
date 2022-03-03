@@ -6,7 +6,7 @@ import androidx.camera.core.ImageProxy
 import org.tensorflow.lite.support.image.TensorImage
 
 
-class ImageProcessor(private val objectDetector: ImageObjectDetector) : ImageAnalysis.Analyzer {
+class ImageProcessor(private val imageDetection: ImageDetectionInterface) : ImageAnalysis.Analyzer {
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         if (imageProxy.image != null) {
@@ -15,7 +15,7 @@ class ImageProcessor(private val objectDetector: ImageObjectDetector) : ImageAna
 
             val tensorImage = TensorImage.fromBitmap(image)
 
-            objectDetector.detectObjects(tensorImage)
+            imageDetection.detect(tensorImage)
             imageProxy.close()
         }
     }
