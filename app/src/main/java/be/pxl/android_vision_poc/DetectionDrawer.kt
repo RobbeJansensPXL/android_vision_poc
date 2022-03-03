@@ -19,10 +19,11 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         detections.forEach {
-            canvas.drawRect((it.boundingBox.left / 480 * this.width * 0.8).toFloat(),
-                (it.boundingBox.top / 640 * this.height * 0.95).toFloat(),
-                (it.boundingBox.right / 480 * this.width * 1.2).toFloat(),
-                (it.boundingBox.bottom / 640 * this.height * 1.05).toFloat(), paint)
+            canvas.drawRect(
+                it.boundingBox.left / 720 * this.width,
+                it.boundingBox.top / 1280 * this.height,
+                it.boundingBox.right / 720 * this.width,
+                it.boundingBox.bottom / 1280 * this.height, paint)
         }
     }
 

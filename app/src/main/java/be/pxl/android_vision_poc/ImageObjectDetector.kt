@@ -26,6 +26,7 @@ class ImageObjectDetector(private val context: Context, private val detectionDra
     override fun detect(tensorImage: TensorImage) {
         val results = objectDetector.detect(tensorImage)
         detectionDrawer.drawDetections(results)
+        Log.d("test", results.toString())
 
         val delta = System.currentTimeMillis() - previousTime
         Log.d("FPS", (1000.0 / delta).toString())

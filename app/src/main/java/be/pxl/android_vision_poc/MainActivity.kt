@@ -5,14 +5,21 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
+import android.view.Surface.*
 import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.AspectRatio.RATIO_16_9
+import androidx.camera.core.AspectRatio.RATIO_4_3
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import be.pxl.android_vision_poc.databinding.ActivityMainBinding
@@ -26,19 +33,23 @@ class MainActivity : AppCompatActivity() {
 
     private val cameraExecutorService: ExecutorService by lazy { Executors.newSingleThreadExecutor() }
 
+    private val displayMetrics = DisplayMetrics()
+
     private val imageAnalyzer by lazy {
         ImageAnalysis.Builder()
+            .setTargetAspectRatio(RATIO_16_9)
             .build()
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageProcessor(ImageObjectSegmenter(this, this.findViewById(R.id.detectionDrawer)))
+                    ImageProcessor(ImageObjectDetector(this, this.findViewById(R.id.detectionDrawer)))
                 )
             }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         supportActionBar?.hide()
 
@@ -61,8 +72,9 @@ class MainActivity : AppCompatActivity() {
         cameraProviderFuture.addListener(
             {
                 val preview = Preview.Builder()
+                    .setTargetAspectRatio(RATIO_16_9)
                     .build()
-                    .also { it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider) }
+                    .also { it.setSurfaceProvider(viewBinding.pvCameraPreview.surfaceProvider) }
                 cameraProviderFuture.get().bind(preview, imageAnalyzer)
             },
             ContextCompat.getMainExecutor(this)
