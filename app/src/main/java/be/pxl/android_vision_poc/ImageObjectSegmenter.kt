@@ -17,8 +17,8 @@ class ImageObjectSegmenter(private val model: String, private val context: Conte
 
     private val objectSegmenter by lazy {
         ImageSegmenter.createFromFileAndOptions(
-            context, // the application context
-            model, // must be same as the filename in assets folder
+            context,
+            model,
             detectorOptions
         )
     }

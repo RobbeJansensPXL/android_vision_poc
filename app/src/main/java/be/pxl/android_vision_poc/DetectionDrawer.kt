@@ -27,6 +27,7 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
         super.onDraw(canvas)
         detections.forEach {
             canvas.drawRect(
+                // TODO: Make it possible for other resolutions to work
                 it.boundingBox.left / 480 * this.width,
                 it.boundingBox.top / 640 * this.height,
                 it.boundingBox.right / 480 * this.width,

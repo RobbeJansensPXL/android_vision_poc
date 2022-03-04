@@ -17,8 +17,8 @@ class ImageClassifier (private val model: String, private val context: Context, 
 
     private val classifier by lazy {
         ImageClassifier.createFromFileAndOptions(
-            context, // the application context
-            model, // must be same as the filename in assets folder
+            context,
+            model,
             detectorOptions
         )
     }

@@ -17,8 +17,8 @@ class ImageObjectDetector(private val model: String, private val context: Contex
 
     private val objectDetector by lazy {
         ObjectDetector.createFromFileAndOptions(
-            context, // the application context
-            model, // must be same as the filename in assets folder
+            context,
+            model,
             detectorOptions
         )
     }
