@@ -7,7 +7,7 @@ import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.segmenter.ImageSegmenter
 
 
-class ImageObjectSegmenter(private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
+class ImageObjectSegmenter(private val model: String, private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
     private val baseOptions = BaseOptions.builder().useGpu().build()
     private var previousTime = System.currentTimeMillis()
 
@@ -18,7 +18,7 @@ class ImageObjectSegmenter(private val context: Context, private val detectionDr
     private val objectSegmenter by lazy {
         ImageSegmenter.createFromFileAndOptions(
             context, // the application context
-            "image_segmentation.tflite", // must be same as the filename in assets folder
+            model, // must be same as the filename in assets folder
             detectorOptions
         )
     }

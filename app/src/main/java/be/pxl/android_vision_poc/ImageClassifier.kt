@@ -6,7 +6,7 @@ import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 
-class ImageClassifier (private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
+class ImageClassifier (private val model: String, private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
     private val baseOptions = BaseOptions.builder().useGpu().build()
     private var previousTime = System.currentTimeMillis()
 
@@ -18,7 +18,7 @@ class ImageClassifier (private val context: Context, private val detectionDrawer
     private val classifier by lazy {
         ImageClassifier.createFromFileAndOptions(
             context, // the application context
-            "classification_example.tflite", // must be same as the filename in assets folder
+            model, // must be same as the filename in assets folder
             detectorOptions
         )
     }

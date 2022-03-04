@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageProcessor(ImageObjectSegmenter(this, this.findViewById(R.id.detectionDrawer)))
+                    ImageProcessor(ImageObjectSegmenter("image_segmentation.tflite", this, this.findViewById(R.id.detectionDrawer)))
                 )
             }
     }

@@ -6,7 +6,7 @@ import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
 
-class ImageObjectDetector(private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
+class ImageObjectDetector(private val model: String, private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
     private val baseOptions = BaseOptions.builder().useGpu().build()
     private var previousTime = System.currentTimeMillis()
 
@@ -18,7 +18,7 @@ class ImageObjectDetector(private val context: Context, private val detectionDra
     private val objectDetector by lazy {
         ObjectDetector.createFromFileAndOptions(
             context, // the application context
-            "beer_bottles.tflite", // must be same as the filename in assets folder
+            model, // must be same as the filename in assets folder
             detectorOptions
         )
     }
