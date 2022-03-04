@@ -7,19 +7,15 @@ import android.graphics.*
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.util.Size
 import android.view.Surface.*
 import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.AspectRatio
-import androidx.camera.core.AspectRatio.RATIO_16_9
 import androidx.camera.core.AspectRatio.RATIO_4_3
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import be.pxl.android_vision_poc.databinding.ActivityMainBinding
@@ -42,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageProcessor(ImageObjectDetector(this, this.findViewById(R.id.detectionDrawer)))
+                    ImageProcessor(ImageObjectSegmenter(this, this.findViewById(R.id.detectionDrawer)))
                 )
             }
     }

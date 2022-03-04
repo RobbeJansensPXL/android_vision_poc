@@ -1,7 +1,6 @@
 package be.pxl.android_vision_poc
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import org.tensorflow.lite.support.image.TensorImage

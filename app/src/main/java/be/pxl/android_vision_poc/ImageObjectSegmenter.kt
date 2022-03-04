@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
-import org.tensorflow.lite.task.vision.detector.ObjectDetector
 import org.tensorflow.lite.task.vision.segmenter.ImageSegmenter
+
 
 class ImageObjectSegmenter(private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
     private val baseOptions = BaseOptions.builder().useGpu().build()
@@ -25,7 +25,8 @@ class ImageObjectSegmenter(private val context: Context, private val detectionDr
 
     override fun detect(tensorImage: TensorImage) {
         var result = objectSegmenter.segment(tensorImage)
-        Log.d("test", result.toString())
+
+        detectionDrawer.drawBitmap(result)
 
         val delta = System.currentTimeMillis() - previousTime
         Log.d("FPS", (1000.0 / delta).toString())
