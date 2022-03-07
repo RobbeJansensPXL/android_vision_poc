@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageProcessor(ImageObjectDetector("beer_bottles_0.tflite", this, this.findViewById(R.id.detectionDrawer)))
+                    ImageProcessor(ImageObjectDetector("beer_bottles_1.tflite", this, this.findViewById(R.id.detectionDrawer)))
                 )
             }
     }

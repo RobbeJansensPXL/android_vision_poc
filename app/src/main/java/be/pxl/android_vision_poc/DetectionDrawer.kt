@@ -12,12 +12,15 @@ import org.tensorflow.lite.task.vision.segmenter.Segmentation
 
 class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(context, attributeSet) {
     private val detections: MutableList<Detection> = mutableListOf()
-    private var bitmap : Bitmap? = null
+    private var imageWidth: Int = 480
+    private var imageHeight: Int = 640
     private val boundingBoxPaint: Paint = Paint().apply {
         style = Paint.Style.STROKE
         strokeWidth = 15f
         color = Color.WHITE
     }
+
+    private var bitmap : Bitmap? = null
     private val transparentBitmapPaint: Paint = Paint().apply {
         alpha = 200
     }
@@ -27,11 +30,10 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
         super.onDraw(canvas)
         detections.forEach {
             canvas.drawRect(
-                // TODO: Make it possible for other resolutions to work
-                it.boundingBox.left / 480 * this.width,
-                it.boundingBox.top / 640 * this.height,
-                it.boundingBox.right / 480 * this.width,
-                it.boundingBox.bottom / 640 * this.height, boundingBoxPaint)
+                it.boundingBox.left / this.imageWidth * this.width,
+                it.boundingBox.top / this.imageHeight * this.height,
+                it.boundingBox.right / this.imageWidth * this.width,
+                it.boundingBox.bottom / this.imageHeight * this.height, boundingBoxPaint)
         }
         val bitmapRectangle = RectF(0F, 0F, this.width.toFloat(), this.height.toFloat())
         if (bitmap != null) {
@@ -40,9 +42,11 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
         }
     }
 
-    fun drawDetections(detections: List<Detection>) {
+    fun drawDetections(detections: List<Detection>, imageWidth: Int, imageHeight: Int) {
         this.detections.clear()
         this.detections.addAll(detections)
+        this.imageWidth = imageWidth
+        this.imageHeight = imageHeight
         invalidate()
     }
 

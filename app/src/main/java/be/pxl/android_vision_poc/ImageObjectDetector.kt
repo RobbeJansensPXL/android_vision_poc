@@ -25,8 +25,7 @@ class ImageObjectDetector(private val model: String, private val context: Contex
 
     override fun detect(tensorImage: TensorImage) {
         val results = objectDetector.detect(tensorImage)
-        detectionDrawer.drawDetections(results)
-        Log.d("test", results.toString())
+        detectionDrawer.drawDetections(results, tensorImage.width, tensorImage.height)
 
         val delta = System.currentTimeMillis() - previousTime
         Log.d("FPS", (1000.0 / delta).toString())
