@@ -1,18 +1,19 @@
-package be.pxl.android_vision_poc
+package be.pxl.android_vision_poc.vision
 
 import android.content.Context
 import android.util.Log
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
+import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 
-class ImageClassifier (private val model: String, private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
+class Classifier (private val model: String, private val context: Context) {
     private val baseOptions = BaseOptions.builder().useGpu().build()
     private var previousTime = System.currentTimeMillis()
 
     private val detectorOptions = ImageClassifier.ImageClassifierOptions.builder()
         .setBaseOptions(baseOptions)
-        .setScoreThreshold(0.3f)
+        .setScoreThreshold(0.45f)
         .build()
 
     private val classifier by lazy {
@@ -23,9 +24,12 @@ class ImageClassifier (private val model: String, private val context: Context, 
         )
     }
 
-    override fun detect(tensorImage: TensorImage) {
-        var result = classifier.classify(tensorImage)
-        result.forEach { classifications ->
+    fun detect(tensorImage: TensorImage): MutableList<Classifications>? {
+        var results = classifier.classify(tensorImage)
+
+        return results
+
+        results.forEach { classifications ->
             classifications.categories.forEach{ category ->
                 Log.d("classification", category.label)
             }

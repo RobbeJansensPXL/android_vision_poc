@@ -1,13 +1,14 @@
-package be.pxl.android_vision_poc
+package be.pxl.android_vision_poc.vision
 
 import android.content.Context
 import android.util.Log
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.segmenter.ImageSegmenter
+import org.tensorflow.lite.task.vision.segmenter.Segmentation
 
 
-class ImageObjectSegmenter(private val model: String, private val context: Context, private val detectionDrawer: DetectionDrawer) : ImageDetectionInterface {
+class ObjectSegmenter(private val model: String, private val context: Context) {
     private val baseOptions = BaseOptions.builder().useGpu().build()
     private var previousTime = System.currentTimeMillis()
 
@@ -23,10 +24,12 @@ class ImageObjectSegmenter(private val model: String, private val context: Conte
         )
     }
 
-    override fun detect(tensorImage: TensorImage) {
+    fun detect(tensorImage: TensorImage): MutableList<Segmentation>? {
         var result = objectSegmenter.segment(tensorImage)
 
-        detectionDrawer.drawBitmap(result)
+        return result
+
+        //detectionDrawer.drawBitmap(result)
 
         val delta = System.currentTimeMillis() - previousTime
         Log.d("FPS", (1000.0 / delta).toString())
