@@ -28,11 +28,5 @@ class ObjectSegmenter(private val model: String, private val context: Context) {
         var result = objectSegmenter.segment(tensorImage)
 
         return result
-
-        //detectionDrawer.drawBitmap(result)
-
-        val delta = System.currentTimeMillis() - previousTime
-        Log.d("FPS", (1000.0 / delta).toString())
-        previousTime = System.currentTimeMillis()
     }
 }

@@ -28,7 +28,7 @@ import org.tensorflow.lite.task.vision.detector.Detection
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-
+//TODO: Add back FPS counter
 class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
