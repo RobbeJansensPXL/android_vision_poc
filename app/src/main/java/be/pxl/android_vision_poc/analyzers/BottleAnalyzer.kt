@@ -19,6 +19,8 @@ class BottleAnalyzer(
     private val bottleClassifier: Classifier,
     private val bottleAnalyzationHandler: (Bitmap, MutableList<Detection>?, MutableList<Category?>) -> Unit
 ) : ImageAnalysis.Analyzer {
+    private var previousTime = System.currentTimeMillis()
+
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         if (imageProxy.image != null) {
@@ -30,6 +32,10 @@ class BottleAnalyzer(
             //calculate
             val detectorResults = bottleObjectDetector.detect(tensorImage)
             val detections = calculateClassificationList(image, detectorResults)
+
+            val delta = System.currentTimeMillis() - previousTime
+            Log.d("FPS", (1000.0 / delta).toString())
+            previousTime = System.currentTimeMillis()
 
             Log.d("detection", detections.toString())
 
