@@ -1,4 +1,4 @@
-package be.pxl.android_vision_poc
+package be.pxl.android_vision_poc.utils
 
 import android.graphics.*
 import android.media.Image

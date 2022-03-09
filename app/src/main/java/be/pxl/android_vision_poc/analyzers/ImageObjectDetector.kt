@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import be.pxl.android_vision_poc.rotate
-import be.pxl.android_vision_poc.toBitmap
+import be.pxl.android_vision_poc.utils.rotate
+import be.pxl.android_vision_poc.utils.toBitmap
 import be.pxl.android_vision_poc.vision.ObjectDetector
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.detector.Detection
