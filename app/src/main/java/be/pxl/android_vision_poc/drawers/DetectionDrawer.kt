@@ -47,9 +47,9 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
 
             if (categories.size != 0) {
                 canvas.drawText(
-                    categories[i].displayName,
+                    "  " + categories[i].label,
                     detections[i].boundingBox.left / this.imageWidth * this.width,
-                    detections[i].boundingBox.top / this.imageHeight * this.height,
+                    (detections[i].boundingBox.centerY() / this.imageHeight * this.height).toFloat(),
                     textPaint)
             }
         }
