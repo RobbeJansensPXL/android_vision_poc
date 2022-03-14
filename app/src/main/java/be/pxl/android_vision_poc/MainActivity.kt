@@ -18,13 +18,16 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import be.pxl.android_vision_poc.analyzers.BottleAnalyzer
+import be.pxl.android_vision_poc.analyzers.ImageObjectSegmenter
 import be.pxl.android_vision_poc.databinding.ActivityMainBinding
 import be.pxl.android_vision_poc.drawers.DetectionDrawer
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectDetector
+import be.pxl.android_vision_poc.vision.ObjectSegmenter
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.detector.Detection
+import org.tensorflow.lite.task.vision.segmenter.Segmentation
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -42,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    BottleAnalyzer(ObjectDetector("beer_bottles_2.tflite", this) ,Classifier("bottle_classifier.tflite", this), ::bottleAnalyzationHandler)
+                    ImageObjectSegmenter(ObjectSegmenter("image_segmentation.tflite", this), ::segmentationHandler)
                 )
             }
     }
@@ -126,6 +129,15 @@ class MainActivity : AppCompatActivity() {
     private fun classificationHandler(classifications: MutableList<Classifications>?) {
         classifications?.forEach { classification ->
             Log.d("classification_result", classification.categories.toString())
+        }
+    }
+
+    private fun segmentationHandler(segmentations: MutableList<Segmentation>?) {
+        if (segmentations != null) {
+            this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawBitmap(segmentations)
+        }
+        segmentations?.forEach{ segmentation ->
+            Log.d("segmentation", segmentation.toString())
         }
     }
 
