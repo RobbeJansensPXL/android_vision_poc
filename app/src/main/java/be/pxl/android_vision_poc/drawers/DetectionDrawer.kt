@@ -6,6 +6,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import be.pxl.android_vision_poc.utils.extractBitmap
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.detector.Detection
@@ -49,7 +50,7 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
                 canvas.drawText(
                     "  " + categories[i].label,
                     detections[i].boundingBox.left / this.imageWidth * this.width,
-                    (detections[i].boundingBox.centerY() / this.imageHeight * this.height).toFloat(),
+                    (detections[i].boundingBox.centerY() / this.imageHeight * this.height),
                     textPaint)
             }
         }
@@ -82,25 +83,9 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
         invalidate()
     }
 
-    fun drawBitmap(segmentationResultList : List<Segmentation>) {
+    fun drawBitmap(bitmap: Bitmap) {
         clear()
-        val segmentationResult: Segmentation = segmentationResultList[0]
-        val tensorMask = segmentationResult.masks[0]
-        val rawMask = tensorMask.tensorBuffer.intArray
-
-        val pixelData = IntArray(rawMask.size * 3)
-        val coloredLabels: List<ColoredLabel> = segmentationResult.coloredLabels
-        for (i in rawMask.indices) {
-            var color = coloredLabels[rawMask[i]].color.toArgb()
-            pixelData[3 * i] = Color.red(color)
-            pixelData[3 * i + 1] = Color.green(color)
-            pixelData[3 * i + 2] = Color.blue(color)
-        }
-        val shape = intArrayOf(tensorMask.width, tensorMask.height, 3)
-        val maskImage = TensorImage()
-        maskImage.load(pixelData, shape)
-
-        this.bitmap = maskImage.bitmap
+        this.bitmap = bitmap
         invalidate()
     }
 

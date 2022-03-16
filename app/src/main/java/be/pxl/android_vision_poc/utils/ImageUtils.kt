@@ -5,8 +5,8 @@ import android.media.Image
 import java.io.ByteArrayOutputStream
 
 fun Image.toBitmap(): Bitmap {
-    val yBuffer = planes[0].buffer // Y
-    val vuBuffer = planes[2].buffer // VU
+    val yBuffer = planes[0].buffer
+    val vuBuffer = planes[2].buffer
 
     val ySize = yBuffer.remaining()
     val vuSize = vuBuffer.remaining()

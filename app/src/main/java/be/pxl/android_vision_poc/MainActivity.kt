@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
 import android.util.Log
-import android.view.Surface.*
 import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,12 +16,13 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import be.pxl.android_vision_poc.analyzers.BottleAnalyzer
+import be.pxl.android_vision_poc.analyzers.BottleSegmentationAnalyzer
+import be.pxl.android_vision_poc.analyzers.ImageClassifier
 import be.pxl.android_vision_poc.analyzers.ImageObjectSegmenter
 import be.pxl.android_vision_poc.databinding.ActivityMainBinding
 import be.pxl.android_vision_poc.drawers.DetectionDrawer
+import be.pxl.android_vision_poc.utils.extractBitmap
 import be.pxl.android_vision_poc.vision.Classifier
-import be.pxl.android_vision_poc.vision.ObjectDetector
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.classifier.Classifications
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageObjectSegmenter(ObjectSegmenter("bottle_segmentation.tflite", this), ::segmentationHandler)
+                    BottleSegmentationAnalyzer(ObjectSegmenter("bottle_segmentation.tflite", this), Classifier("bottle_classifier.tflite", this), ::bottleSegmentationAnalyzationHandler)
                 )
             }
     }
@@ -134,17 +134,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun segmentationHandler(segmentations: MutableList<Segmentation>?) {
         if (segmentations != null) {
-            this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawBitmap(segmentations)
+            this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawBitmap(segmentations[0].extractBitmap())
         }
         segmentations?.forEach{ segmentation ->
             Log.d("segmentation", segmentation.toString())
         }
     }
 
-    private fun bottleAnalyzationHandler(image: Bitmap, detections: MutableList<Detection>?, categories: MutableList<Category?>) {
+    private fun bottleObjectDetectionAnalyzationHandler(image: Bitmap, detections: MutableList<Detection>?, categories: MutableList<Category?>) {
         if (detections != null) {
             this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawDetectionsWithClassification(detections, image.width, image.height, categories)
         }
+    }
+
+    private fun bottleSegmentationAnalyzationHandler(image: Bitmap, segmentationMask: Bitmap) {
+        this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawBitmap(segmentationMask)
     }
 
     override fun onDestroy() {

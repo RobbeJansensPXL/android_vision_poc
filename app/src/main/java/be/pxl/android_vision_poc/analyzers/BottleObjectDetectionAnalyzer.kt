@@ -14,7 +14,7 @@ import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.detector.Detection
 
-class BottleAnalyzer(
+class BottleObjectDetectionAnalyzer(
     private val bottleObjectDetector: ObjectDetector,
     private val bottleClassifier: Classifier,
     private val bottleAnalyzationHandler: (Bitmap, MutableList<Detection>?, MutableList<Category?>) -> Unit

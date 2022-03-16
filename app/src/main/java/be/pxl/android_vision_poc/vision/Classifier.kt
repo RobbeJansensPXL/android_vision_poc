@@ -11,7 +11,7 @@ class Classifier (private val model: String, private val context: Context) {
 
     private val detectorOptions = ImageClassifier.ImageClassifierOptions.builder()
         .setBaseOptions(baseOptions)
-        .setScoreThreshold(0.4f)
+        .setScoreThreshold(0.2f)
         .build()
 
     private val classifier by lazy {
@@ -23,8 +23,6 @@ class Classifier (private val model: String, private val context: Context) {
     }
 
     fun detect(tensorImage: TensorImage): MutableList<Classifications>? {
-        var results = classifier.classify(tensorImage)
-
-        return results
+        return classifier.classify(tensorImage)
     }
 }
