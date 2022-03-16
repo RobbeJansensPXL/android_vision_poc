@@ -32,10 +32,10 @@ android {
     buildFeatures {
         viewBinding true
     }
-    // To prevent the model file from being compressed
-    aaptOptions {
-        noCompress "tflite"
+    androidResources {
+        noCompress 'tflite'
     }
+// To prevent the model file from being compressed
 }
 
 dependencies {

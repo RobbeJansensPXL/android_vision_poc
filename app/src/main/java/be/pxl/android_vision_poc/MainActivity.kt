@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    ImageObjectSegmenter(ObjectSegmenter("image_segmentation.tflite", this), ::segmentationHandler)
+                    ImageObjectSegmenter(ObjectSegmenter("bottle_segmentation.tflite", this), ::segmentationHandler)
                 )
             }
     }
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun objectDetectorResultHandler(image: Bitmap, detections: MutableList<Detection>?) {
         if (detections != null) {
-            //this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawDetections(detections, image.width, image.height)
+            this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawDetections(detections, image.width, image.height)
         }
     }
 
