@@ -11,7 +11,7 @@ class Classifier (private val model: String, private val context: Context) {
 
     private val detectorOptions = ImageClassifier.ImageClassifierOptions.builder()
         .setBaseOptions(baseOptions)
-        .setScoreThreshold(0.2f)
+        .setScoreThreshold(0.3f)
         .build()
 
     private val classifier by lazy {

@@ -7,6 +7,7 @@ import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio.RATIO_4_3
@@ -16,6 +17,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import be.pxl.android_vision_poc.analyzers.BottleObjectDetectionAnalyzer
 import be.pxl.android_vision_poc.analyzers.BottleSegmentationAnalyzer
 import be.pxl.android_vision_poc.analyzers.ImageClassifier
 import be.pxl.android_vision_poc.analyzers.ImageObjectSegmenter
@@ -23,6 +25,7 @@ import be.pxl.android_vision_poc.databinding.ActivityMainBinding
 import be.pxl.android_vision_poc.drawers.DetectionDrawer
 import be.pxl.android_vision_poc.utils.extractBitmap
 import be.pxl.android_vision_poc.vision.Classifier
+import be.pxl.android_vision_poc.vision.ObjectDetector
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.classifier.Classifications
@@ -45,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    BottleSegmentationAnalyzer(ObjectSegmenter("bottle_segmentation.tflite", this), Classifier("bottle_classifier.tflite", this), ::bottleSegmentationAnalyzationHandler)
+                    BottleSegmentationAnalyzer(ObjectSegmenter("bottle_segmentation.tflite", this), Classifier("label_classifier.tflite", this), ::bottleSegmentationAnalyzationHandler)
                 )
             }
     }
@@ -144,11 +147,17 @@ class MainActivity : AppCompatActivity() {
     private fun bottleObjectDetectionAnalyzationHandler(image: Bitmap, detections: MutableList<Detection>?, categories: MutableList<Category?>) {
         if (detections != null) {
             this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawDetectionsWithClassification(detections, image.width, image.height, categories)
+            this@MainActivity.runOnUiThread(java.lang.Runnable {
+                this.findViewById<TextView>(R.id.tv_result).text = categories.toString()
+            })
         }
     }
 
-    private fun bottleSegmentationAnalyzationHandler(image: Bitmap, segmentationMask: Bitmap) {
+    private fun bottleSegmentationAnalyzationHandler(image: Bitmap, segmentationMask: Bitmap, classification_result:MutableList<Classifications>) {
         this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawBitmap(segmentationMask)
+        this@MainActivity.runOnUiThread(java.lang.Runnable {
+            this.findViewById<TextView>(R.id.tv_result).text = classification_result[0].categories.toString()
+        })
     }
 
     override fun onDestroy() {

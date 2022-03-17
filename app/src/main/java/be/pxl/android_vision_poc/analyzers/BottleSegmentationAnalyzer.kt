@@ -2,6 +2,7 @@ package be.pxl.android_vision_poc.analyzers
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -11,12 +12,14 @@ import be.pxl.android_vision_poc.utils.toBitmap
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
 import org.tensorflow.lite.support.image.TensorImage
+import org.tensorflow.lite.task.vision.classifier.Classifications
 import kotlin.math.log
 
+//TODO: Clean Code
 class BottleSegmentationAnalyzer (
     private val bottleSegmenter: ObjectSegmenter,
     private val labelClassifier: Classifier,
-    private val bottleSegmentationAnalyzationHandler: (Bitmap, Bitmap) -> Unit
+    private val bottleSegmentationAnalyzationHandler: (Bitmap, Bitmap, MutableList<Classifications>) -> Unit
 ) : ImageAnalysis.Analyzer {
     private var previousTime = System.currentTimeMillis()
 
@@ -37,6 +40,7 @@ class BottleSegmentationAnalyzer (
 
             val labelBitmap = Bitmap.createBitmap(segmentationBitmap.width, segmentationBitmap.height, Bitmap.Config.ARGB_8888)
 
+            //betere manier zoeken (NIET PERFORMANT)
             for (x in 0 until segmentationBitmap.width) {
                 for (y in 0 until segmentationBitmap.height) {
                     if (segmentationBitmap.getPixel(x, y) == -16744448) {
@@ -56,10 +60,13 @@ class BottleSegmentationAnalyzer (
             Log.d("segmentation", segmentationResult.toString())
 
             //return results
-            bottleSegmentationAnalyzationHandler(
-                image,
-                labelBitmap
-            )
+            if (classificationResult != null) {
+                bottleSegmentationAnalyzationHandler(
+                    image,
+                    segmentationBitmap,
+                    classificationResult
+                )
+            }
 
             //Close image proxy
             imageProxy.close()
