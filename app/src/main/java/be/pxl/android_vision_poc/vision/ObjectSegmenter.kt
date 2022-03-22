@@ -9,8 +9,7 @@ import org.tensorflow.lite.task.vision.segmenter.Segmentation
 
 
 class ObjectSegmenter(private val model: String, private val context: Context) {
-    private val baseOptions = BaseOptions.builder().useGpu().build()
-    private var previousTime = System.currentTimeMillis()
+    private val baseOptions = BaseOptions.builder().setNumThreads(4).useNnapi().useGpu().build()
 
     private val detectorOptions = ImageSegmenter.ImageSegmenterOptions.builder()
         .setBaseOptions(baseOptions)

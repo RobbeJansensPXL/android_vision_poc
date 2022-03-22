@@ -2,28 +2,52 @@ package be.pxl.android_vision_poc.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import org.tensorflow.lite.support.image.TensorImage
-import org.tensorflow.lite.task.vision.segmenter.ColoredLabel
 import org.tensorflow.lite.task.vision.segmenter.Segmentation
 
 fun Segmentation.extractBitmap(): Bitmap {
-    val tensorMask = masks[0]
-    val rawMask = tensorMask.tensorBuffer.intArray
+    val colors = IntArray(coloredLabels.size)
 
-    val pixelData = IntArray(rawMask.size * 3)
-    val coloredLabels: List<ColoredLabel> = coloredLabels
-
-    for (i in rawMask.indices) {
-        val color = coloredLabels[rawMask[i]].color.toArgb()
-
-        pixelData[3 * i] = Color.red(color)
-        pixelData[3 * i + 1] = Color.green(color)
-        pixelData[3 * i + 2] = Color.blue(color)
+    for ((cnt, coloredLabel) in coloredLabels.withIndex()) {
+        val rgb = coloredLabel.argb
+        colors[cnt] = Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
     }
 
-    val shape = intArrayOf(tensorMask.width, tensorMask.height, 3)
-    val maskImage = TensorImage()
-    maskImage.load(pixelData, shape)
+    val maskTensor = masks[0]
+    val maskArray = maskTensor.buffer.array()
+    val pixels = IntArray(maskArray.size)
+    val itemsFound = HashMap<String, Int>()
+    for (i in maskArray.indices) {
+        val color = colors[maskArray[i].toInt()]
+        pixels[i] = color
+        itemsFound[coloredLabels[maskArray[i].toInt()].getlabel()] = color
+    }
 
-    return maskImage.bitmap
+    return Bitmap.createBitmap(
+        pixels, maskTensor.width, maskTensor.height,
+        Bitmap.Config.ARGB_8888
+    )
+}
+
+fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColors: IntArray): Pair<Bitmap, Bitmap> {
+    val maskTensor = masks[0]
+    val maskArray = maskTensor.buffer.array()
+    val pixels = IntArray(maskArray.size)
+    val filteredPixels = IntArray(maskArray.size)
+    for (i in maskArray.indices) {
+        val index = maskArray[i].toInt()
+        pixels[i] = colors[index]
+        filteredPixels[i] = filteredColors[index]
+    }
+
+    val maskBitmap = Bitmap.createBitmap(
+        pixels, maskTensor.width, maskTensor.height,
+        Bitmap.Config.ARGB_8888
+    )
+
+    val filteredMaskBitmap = Bitmap.createBitmap(
+        filteredPixels, maskTensor.width, maskTensor.height,
+        Bitmap.Config.ARGB_8888
+    )
+
+    return Pair(maskBitmap, filteredMaskBitmap)
 }

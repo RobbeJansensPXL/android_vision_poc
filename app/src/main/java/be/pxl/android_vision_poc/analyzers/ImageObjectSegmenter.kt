@@ -1,6 +1,7 @@
 package be.pxl.android_vision_poc.analyzers
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import be.pxl.android_vision_poc.utils.rotate
@@ -13,6 +14,8 @@ class ImageObjectSegmenter(
     private val segmenter: ObjectSegmenter,
     private val segmentationHandler: (result: MutableList<Segmentation>?) -> Unit
 ) : ImageAnalysis.Analyzer {
+    private var previousTime = System.currentTimeMillis()
+
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         if (imageProxy.image != null) {
@@ -21,9 +24,15 @@ class ImageObjectSegmenter(
             val image = targetImage.rotate(imageProxy.imageInfo.rotationDegrees.toFloat())
             val tensorImage = TensorImage.fromBitmap(image)
 
+            val result = segmenter.detect(tensorImage)
+
+            val delta = System.currentTimeMillis() - previousTime
+            Log.d("FPS", (1000.0 / delta).toString())
+            previousTime = System.currentTimeMillis()
+
             //return results to MainActivity
             segmentationHandler(
-                segmenter.detect(tensorImage)
+                result
             )
 
             //Close image proxy
