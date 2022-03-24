@@ -50,13 +50,13 @@ class BottleSegmentationAnalyzer (
             previousTime = System.currentTimeMillis()
 
             //test
-            val (segmentationBitmap, filteredSegmentationBitmap) = segmentationResult.extractMaskAndFilteredMask(colors, filteredColors)
-            val resizedImage = Bitmap.createScaledBitmap(image, filteredSegmentationBitmap.width, filteredSegmentationBitmap.height, false)
+            var (segmentationBitmap, filteredSegmentationBitmap) = segmentationResult.extractMaskAndFilteredMask(colors, filteredColors)
+            filteredSegmentationBitmap = Bitmap.createScaledBitmap(filteredSegmentationBitmap, image.width, image.height, false)
 
             val labelBitmap = Bitmap.createBitmap(filteredSegmentationBitmap.width, filteredSegmentationBitmap.height, Bitmap.Config.ARGB_8888)
 
             val canvas = Canvas(labelBitmap)
-            canvas.drawBitmap(resizedImage, 0.0f, 0.0f, null)
+            canvas.drawBitmap(image, 0.0f, 0.0f, null)
             canvas.drawBitmap(filteredSegmentationBitmap, 0.0f, 0.0f, null)
 
             val classificationResult = labelClassifier.detect(TensorImage.fromBitmap(labelBitmap))
