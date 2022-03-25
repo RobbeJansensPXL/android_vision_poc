@@ -28,3 +28,13 @@ fun Bitmap.rotate(degrees: Float): Bitmap {
     val matrix = Matrix().apply { postRotate(degrees) }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }
+
+fun Bitmap.cropRectangle(rectangle: RectF) : Bitmap {
+    val left = rectangle.left.toInt().coerceAtLeast(0)
+    val top = rectangle.top.toInt().coerceAtLeast(0)
+    val right = rectangle.right.toInt().coerceAtMost(this.width)
+    val bottom = rectangle.bottom.toInt().coerceAtMost(this.height)
+    val width = (right - left).coerceAtMost(this.width - right).coerceAtLeast(1)
+    val height = (bottom - top).coerceAtMost(this.height - top).coerceAtLeast(1)
+    return Bitmap.createBitmap(this, left, top, width, height)
+}

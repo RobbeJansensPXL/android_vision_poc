@@ -153,10 +153,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun bottleSegmentationAnalyzationHandler(image: Bitmap, segmentationMask: Bitmap, classification_result:MutableList<Classifications>) {
+    private fun bottleSegmentationAnalyzationHandler(image: Bitmap, segmentationMask: Bitmap, classification_result:MutableList<Classifications>?) {
         this.findViewById<DetectionDrawer>(R.id.detectionDrawer).drawBitmap(segmentationMask)
+
         this@MainActivity.runOnUiThread(java.lang.Runnable {
-            this.findViewById<TextView>(R.id.tv_result).text = classification_result[0].categories.toString()
+            if (classification_result != null) {
+                this.findViewById<TextView>(R.id.tv_result).text =
+                    classification_result[0].categories.toString()
+            }
+            else {
+                this.findViewById<TextView>(R.id.tv_result).text = ""
+            }
         })
     }
 

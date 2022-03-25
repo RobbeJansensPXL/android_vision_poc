@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.RectF
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import be.pxl.android_vision_poc.utils.extractBitmap
-import be.pxl.android_vision_poc.utils.extractMaskAndFilteredMask
-import be.pxl.android_vision_poc.utils.rotate
-import be.pxl.android_vision_poc.utils.toBitmap
+import be.pxl.android_vision_poc.utils.*
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
 import org.tensorflow.lite.support.image.TensorImage
@@ -23,7 +21,7 @@ import kotlin.math.log
 class BottleSegmentationAnalyzer (
     private val bottleSegmenter: ObjectSegmenter,
     private val labelClassifier: Classifier,
-    private val bottleSegmentationAnalyzationHandler: (Bitmap, Bitmap, MutableList<Classifications>) -> Unit
+    private val bottleSegmentationAnalyzationHandler: (Bitmap, Bitmap, MutableList<Classifications>?) -> Unit
 ) : ImageAnalysis.Analyzer {
     private var previousTime = System.currentTimeMillis()
     private lateinit var colors: IntArray
@@ -50,29 +48,23 @@ class BottleSegmentationAnalyzer (
             previousTime = System.currentTimeMillis()
 
             //test
-            var (segmentationBitmap, filteredSegmentationBitmap) = segmentationResult.extractMaskAndFilteredMask(colors, filteredColors)
-            filteredSegmentationBitmap = Bitmap.createScaledBitmap(filteredSegmentationBitmap, image.width, image.height, false)
+            var (segmentationBitmap, labelRectangle) = segmentationResult.extractMaskAndFilteredMask(colors, -16744448, image.width, image.height)
 
-            val labelBitmap = Bitmap.createBitmap(filteredSegmentationBitmap.width, filteredSegmentationBitmap.height, Bitmap.Config.ARGB_8888)
+            var classificationResult : MutableList<Classifications>? = null
 
-            val canvas = Canvas(labelBitmap)
-            canvas.drawBitmap(image, 0.0f, 0.0f, null)
-            canvas.drawBitmap(filteredSegmentationBitmap, 0.0f, 0.0f, null)
+            if (labelRectangle != null) {
+                Log.d("test", labelRectangle.toString())
+                val labelBitmap = image.cropRectangle(labelRectangle)
 
-            val classificationResult = labelClassifier.detect(TensorImage.fromBitmap(labelBitmap))
-
-            Log.d("classification", classificationResult.toString())
-
-            Log.d("segmentation", segmentationResult.toString())
+                classificationResult = labelClassifier.detect(TensorImage.fromBitmap(labelBitmap))!!
+            }
 
             //return results
-            if (classificationResult != null) {
-                bottleSegmentationAnalyzationHandler(
-                    image,
-                    segmentationBitmap,
-                    classificationResult
-                )
-            }
+            bottleSegmentationAnalyzationHandler(
+                image,
+                segmentationBitmap,
+                classificationResult
+            )
 
             //Close image proxy
             imageProxy.close()

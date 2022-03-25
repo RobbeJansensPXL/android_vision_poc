@@ -2,7 +2,10 @@ package be.pxl.android_vision_poc.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.RectF
+import android.util.Log
 import org.tensorflow.lite.task.vision.segmenter.Segmentation
+import kotlin.math.log
 
 fun Segmentation.extractBitmap(): Bitmap {
     val colors = IntArray(coloredLabels.size)
@@ -15,11 +18,10 @@ fun Segmentation.extractBitmap(): Bitmap {
     val maskTensor = masks[0]
     val maskArray = maskTensor.buffer.array()
     val pixels = IntArray(maskArray.size)
-    val itemsFound = HashMap<String, Int>()
+
     for (i in maskArray.indices) {
         val color = colors[maskArray[i].toInt()]
         pixels[i] = color
-        itemsFound[coloredLabels[maskArray[i].toInt()].getlabel()] = color
     }
 
     return Bitmap.createBitmap(
@@ -28,26 +30,57 @@ fun Segmentation.extractBitmap(): Bitmap {
     )
 }
 
-fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColors: IntArray): Pair<Bitmap, Bitmap> {
+fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColor: Int, originalWidth: Int, originalHeight: Int): Pair<Bitmap, RectF?> {
     val maskTensor = masks[0]
+    val width = maskTensor.width
+    val height = maskTensor.height
     val maskArray = maskTensor.buffer.array()
     val pixels = IntArray(maskArray.size)
     val filteredPixels = IntArray(maskArray.size)
+
+    var top = -1
+    var left = -1
+    var right = -1
+    var bottom = -1
+
+
     for (i in maskArray.indices) {
-        val index = maskArray[i].toInt()
-        pixels[i] = colors[index]
-        filteredPixels[i] = filteredColors[index]
+        val colorIndex = maskArray[i].toInt()
+        val color = colors[colorIndex]
+        pixels[i] = color
+
+        if (color == filteredColor) {
+            val row = i / width
+            val col = i - row * width
+
+            if (top == -1) {
+                top = row
+                bottom = row
+                left = col
+                right = col
+            }
+            else {
+                bottom = row
+                if (col < left) {
+                    left = col
+                }
+                else if (col > right)
+                    right = col
+            }
+        }
     }
 
     val maskBitmap = Bitmap.createBitmap(
-        pixels, maskTensor.width, maskTensor.height,
+        pixels, width, height,
         Bitmap.Config.ARGB_8888
     )
 
-    val filteredMaskBitmap = Bitmap.createBitmap(
-        filteredPixels, maskTensor.width, maskTensor.height,
-        Bitmap.Config.ARGB_8888
-    )
+    if (top == -1) {
+        return Pair(maskBitmap, null)
+    }
 
-    return Pair(maskBitmap, filteredMaskBitmap)
+    val floatHeight = height.toFloat()
+    val floatWidth = width.toFloat()
+
+    return Pair(maskBitmap, RectF(left / floatWidth * originalWidth, top / floatHeight * originalHeight, right / floatWidth * originalWidth, bottom / floatHeight * originalHeight))
 }
