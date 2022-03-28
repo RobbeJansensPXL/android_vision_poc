@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(
                     cameraExecutorService,
-                    BottleSegmentationAnalyzer(ObjectSegmenter("bottle_segmentation.tflite", this), Classifier("bottle_classifier.tflite", this), ::bottleSegmentationAnalyzationHandler)
+                    BottleSegmentationAnalyzer(ObjectSegmenter("bottle_segmentation.tflite", this), Classifier("label_classifier.tflite", this), ::bottleSegmentationAnalyzationHandler)
                 )
             }
     }

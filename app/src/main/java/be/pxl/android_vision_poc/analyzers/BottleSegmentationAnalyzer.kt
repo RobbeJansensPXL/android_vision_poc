@@ -55,6 +55,7 @@ class BottleSegmentationAnalyzer (
             if (labelRectangle != null) {
                 Log.d("test", labelRectangle.toString())
                 val labelBitmap = image.cropRectangle(labelRectangle)
+                segmentationBitmap = labelBitmap
 
                 classificationResult = labelClassifier.detect(TensorImage.fromBitmap(labelBitmap))!!
             }

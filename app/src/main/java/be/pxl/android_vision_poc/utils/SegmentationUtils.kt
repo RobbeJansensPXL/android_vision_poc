@@ -75,12 +75,12 @@ fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColor: Int
         Bitmap.Config.ARGB_8888
     )
 
-    if (top == -1) {
+    if (top == -1 || ((right - left) < 50 && (bottom - top) < 50)) {
         return Pair(maskBitmap, null)
     }
 
     val floatHeight = height.toFloat()
     val floatWidth = width.toFloat()
 
-    return Pair(maskBitmap, RectF(left / floatWidth * originalWidth, top / floatHeight * originalHeight, right / floatWidth * originalWidth, bottom / floatHeight * originalHeight))
+    return Pair(maskBitmap, RectF((left / floatWidth * originalWidth * 0.9).toFloat(), (top / floatHeight * originalHeight * 0.9).toFloat(), (right / floatWidth * originalWidth * 1.1).toFloat(), (bottom / floatHeight * originalHeight * 1.1).toFloat()))
 }
