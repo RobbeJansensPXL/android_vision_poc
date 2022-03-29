@@ -1,7 +1,6 @@
 package be.pxl.android_vision_poc.vision
 
 import android.content.Context
-import android.util.Log
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.segmenter.ImageSegmenter

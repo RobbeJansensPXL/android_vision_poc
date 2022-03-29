@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
 
     private val imageAnalyzer by lazy {
         ImageAnalysis.Builder()
-            .setTargetAspectRatio(RATIO_4_3)
             .build()
             .also {
                 it.setAnalyzer(
