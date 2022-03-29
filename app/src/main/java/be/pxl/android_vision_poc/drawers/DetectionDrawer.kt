@@ -4,14 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import be.pxl.android_vision_poc.utils.extractBitmap
-import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.detector.Detection
-import org.tensorflow.lite.task.vision.segmenter.ColoredLabel
-import org.tensorflow.lite.task.vision.segmenter.Segmentation
 
 class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(context, attributeSet) {
     private val detections: MutableList<Detection> = mutableListOf()

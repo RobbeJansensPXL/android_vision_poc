@@ -2,22 +2,20 @@ package be.pxl.android_vision_poc.analyzers
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.RectF
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import be.pxl.android_vision_poc.utils.*
+import be.pxl.android_vision_poc.utils.cropRectangle
+import be.pxl.android_vision_poc.utils.extractMaskAndFilteredMask
+import be.pxl.android_vision_poc.utils.rotate
+import be.pxl.android_vision_poc.utils.toBitmap
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.segmenter.Segmentation
-import java.util.*
-import kotlin.math.log
 
-//TODO: Clean Code
 class BottleSegmentationAnalyzer (
     private val bottleSegmenter: ObjectSegmenter,
     private val labelClassifier: Classifier,
@@ -35,30 +33,27 @@ class BottleSegmentationAnalyzer (
             val image = targetImage.rotate(imageProxy.imageInfo.rotationDegrees.toFloat())
             val tensorImage = TensorImage.fromBitmap(image)
 
-            //calculate
+            //segment
             val segmentationResult = bottleSegmenter.detect(tensorImage)?.get(0) ?: return
 
             if (!this::colors.isInitialized) {
                 initializeColors(segmentationResult)
             }
 
+            val (segmentationBitmap, labelRectangle) = segmentationResult.extractMaskAndFilteredMask(colors, -16744448, image.width, image.height)
 
-            val delta = System.currentTimeMillis() - previousTime
-            Log.d("FPS", (1000.0 / delta).toString())
-            previousTime = System.currentTimeMillis()
-
-            //test
-            var (segmentationBitmap, labelRectangle) = segmentationResult.extractMaskAndFilteredMask(colors, -16744448, image.width, image.height)
-
+            //classify
             var classificationResult : MutableList<Classifications>? = null
 
             if (labelRectangle != null) {
-                Log.d("test", labelRectangle.toString())
                 val labelBitmap = image.cropRectangle(labelRectangle)
-                segmentationBitmap = labelBitmap
-
                 classificationResult = labelClassifier.detect(TensorImage.fromBitmap(labelBitmap))!!
             }
+
+            //calculate performance
+            val delta = System.currentTimeMillis() - previousTime
+            Log.d("FPS", (1000.0 / delta).toString())
+            previousTime = System.currentTimeMillis()
 
             //return results
             bottleSegmentationAnalyzationHandler(
@@ -82,7 +77,13 @@ class BottleSegmentationAnalyzer (
 
         for ((cnt, coloredLabel) in segmentation.coloredLabels.withIndex()) {
             val rgb = coloredLabel.argb
-            colors[cnt] = Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
+
+            if (rgb != Color.BLACK) {
+                colors[cnt] = Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
+            }
+            else {
+                colors[cnt] = Color.TRANSPARENT
+            }
         }
     }
 }

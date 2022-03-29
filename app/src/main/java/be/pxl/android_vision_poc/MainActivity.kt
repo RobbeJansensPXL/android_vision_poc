@@ -3,7 +3,7 @@ package be.pxl.android_vision_poc
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.*
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
@@ -17,15 +17,11 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import be.pxl.android_vision_poc.analyzers.BottleObjectDetectionAnalyzer
 import be.pxl.android_vision_poc.analyzers.BottleSegmentationAnalyzer
-import be.pxl.android_vision_poc.analyzers.ImageClassifier
-import be.pxl.android_vision_poc.analyzers.ImageObjectSegmenter
 import be.pxl.android_vision_poc.databinding.ActivityMainBinding
 import be.pxl.android_vision_poc.drawers.DetectionDrawer
 import be.pxl.android_vision_poc.utils.extractBitmap
 import be.pxl.android_vision_poc.vision.Classifier
-import be.pxl.android_vision_poc.vision.ObjectDetector
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.classifier.Classifications
@@ -34,7 +30,6 @@ import org.tensorflow.lite.task.vision.segmenter.Segmentation
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-//TODO: Add back FPS counter
 class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
