@@ -40,7 +40,7 @@ class BottleSegmentationAnalyzer (
                 initializeColors(segmentationResult)
             }
 
-            val (segmentationBitmap, labelRectangle) = segmentationResult.extractMaskAndFilteredMask(colors, -16744448, image.width, image.height)
+            var (segmentationBitmap, labelRectangle) = segmentationResult.extractMaskAndFilteredMask(colors, -16744448, image.width, image.height)
 
             //classify
             var classificationResult : MutableList<Classifications>? = null

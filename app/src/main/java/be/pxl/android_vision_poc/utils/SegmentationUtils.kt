@@ -41,6 +41,9 @@ fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColor: Int
     var right = -1
     var bottom = -1
 
+    var nonMaskCount = 0
+    val nonMaskThreshold = originalWidth * 10
+
 
     for (i in maskArray.indices) {
         val colorIndex = maskArray[i].toInt()
@@ -48,6 +51,15 @@ fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColor: Int
         pixels[i] = color
 
         if (color == filteredColor) {
+            if (nonMaskCount >= nonMaskThreshold) {
+                top = -1
+                left = -1
+                right = -1
+                bottom = -1
+            }
+
+            nonMaskCount = 0
+
             val row = i / width
             val col = i - row * width
 
@@ -65,6 +77,9 @@ fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColor: Int
                 else if (col > right)
                     right = col
             }
+        }
+        else {
+            nonMaskCount++
         }
     }
 
