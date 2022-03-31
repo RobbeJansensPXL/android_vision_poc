@@ -27,9 +27,7 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
     }
 
     private var bitmap : Bitmap? = null
-    private val transparentBitmapPaint: Paint = Paint().apply {
-        alpha = 200
-    }
+    private val bitmapPaint: Paint = Paint()
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
@@ -52,7 +50,7 @@ class DetectionDrawer(context: Context?, attributeSet: AttributeSet?) : View(con
         val bitmapRectangle = RectF(0F, 0F, this.width.toFloat(), this.height.toFloat())
         if (bitmap != null) {
 
-            canvas.drawBitmap(bitmap!!, null, bitmapRectangle, transparentBitmapPaint)
+            canvas.drawBitmap(bitmap!!, null, bitmapRectangle, bitmapPaint)
         }
     }
 

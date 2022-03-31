@@ -50,7 +50,7 @@ fun Segmentation.extractMaskAndFilteredMask(colors: IntArray, filteredColor: Int
         val color = colors[colorIndex]
         pixels[i] = color
 
-        if (color == filteredColor) {
+        if (colorIndex == 2) {
             if (nonMaskCount >= nonMaskThreshold) {
                 top = -1
                 left = -1

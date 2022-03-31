@@ -29,13 +29,28 @@
 
     <TextView
         android:id="@+id/tv_result"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
+        android:layout_margin="10dp"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="566dp"
         app:layout_constraintTop_toBottomOf="@id/pv_camera_preview"
         app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_beer_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_result" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_retrieve_info"
+        android:layout_margin="10dp"
+        android:text="Retrieve Info"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

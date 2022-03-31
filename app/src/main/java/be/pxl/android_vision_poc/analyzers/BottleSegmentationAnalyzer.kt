@@ -79,7 +79,7 @@ class BottleSegmentationAnalyzer (
             val rgb = coloredLabel.argb
 
             if (rgb != Color.BLACK) {
-                colors[cnt] = Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
+                colors[cnt] = Color.argb(120, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
             }
             else {
                 colors[cnt] = Color.TRANSPARENT
