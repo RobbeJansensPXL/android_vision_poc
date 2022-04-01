@@ -12,6 +12,8 @@ import be.pxl.android_vision_poc.utils.rotate
 import be.pxl.android_vision_poc.utils.toBitmap
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.segmenter.Segmentation
@@ -40,27 +42,29 @@ class BottleSegmentationAnalyzer (
                 initializeColors(segmentationResult)
             }
 
-            var (segmentationBitmap, labelRectangle) = segmentationResult.extractMaskAndFilteredMask(colors, -16744448, image.width, image.height)
-
-            //classify
-            var classificationResult : MutableList<Classifications>? = null
-
-            if (labelRectangle != null) {
-                val labelBitmap = image.cropRectangle(labelRectangle)
-                classificationResult = labelClassifier.detect(TensorImage.fromBitmap(labelBitmap))!!
-            }
-
             //calculate performance
             val delta = System.currentTimeMillis() - previousTime
             Log.d("FPS", (1000.0 / delta).toString())
             previousTime = System.currentTimeMillis()
 
-            //return results
-            bottleSegmentationAnalyzationHandler(
-                image,
-                segmentationBitmap,
-                classificationResult
-            )
+            GlobalScope.launch {
+                val (segmentationBitmap, labelRectangle) = segmentationResult.extractMaskAndFilteredMask(colors, -16744448, image.width, image.height)
+
+                //classify
+                var classificationResult : MutableList<Classifications>? = null
+
+                if (labelRectangle != null) {
+                    val labelBitmap = image.cropRectangle(labelRectangle)
+                    classificationResult = labelClassifier.detect(TensorImage.fromBitmap(labelBitmap))!!
+                }
+
+                //return results
+                bottleSegmentationAnalyzationHandler(
+                    image,
+                    segmentationBitmap,
+                    classificationResult
+                )
+            }
 
             //Close image proxy
             imageProxy.close()
