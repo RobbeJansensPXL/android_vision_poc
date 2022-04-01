@@ -23,8 +23,6 @@ class ObjectSegmenter(private val model: String, private val context: Context) {
     }
 
     fun detect(tensorImage: TensorImage): MutableList<Segmentation>? {
-        var result = objectSegmenter.segment(tensorImage)
-
-        return result
+        return objectSegmenter.segment(tensorImage)
     }
 }

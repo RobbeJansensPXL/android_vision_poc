@@ -23,8 +23,6 @@ class ObjectDetector(private val model: String, private val context: Context) {
     }
 
     fun detect(tensorImage: TensorImage): MutableList<Detection>? {
-        val results = objectDetector.detect(tensorImage)
-
-        return results
+        return objectDetector.detect(tensorImage)
     }
 }

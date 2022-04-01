@@ -12,6 +12,7 @@ import be.pxl.android_vision_poc.utils.rotate
 import be.pxl.android_vision_poc.utils.toBitmap
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
