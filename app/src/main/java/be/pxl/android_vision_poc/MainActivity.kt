@@ -19,14 +19,18 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import be.pxl.android_vision_poc.analyzers.BottleSegmentationAnalyzer
 import be.pxl.android_vision_poc.api.UntappdInstance
 import be.pxl.android_vision_poc.databinding.ActivityMainBinding
 import be.pxl.android_vision_poc.drawers.DetectionDrawer
+import be.pxl.android_vision_poc.fragments.FavoritesFragment
+import be.pxl.android_vision_poc.fragments.SearchFragment
 import be.pxl.android_vision_poc.utils.extractBitmap
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.detector.Detection
@@ -39,6 +43,9 @@ import java.util.concurrent.Executors
 class MainActivity : AppCompatActivity() {
     private val CLIENT_ID = "3AB342D9C5E0E2D86269BC0D3EF27BEFECB2501A"
     private val CLIENT_SECRET = "E8DB4CE6AB30D7DDED14F2CEE461B784EBAAE415"
+
+    private val searchFragment = SearchFragment()
+    private val favoritesFragment = FavoritesFragment()
 
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
@@ -65,6 +72,17 @@ class MainActivity : AppCompatActivity() {
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+
+        replaceFragment(searchFragment)
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bnv_main)
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.ic_search -> replaceFragment(searchFragment)
+                R.id.ic_favorites -> replaceFragment(favoritesFragment)
+            }
+            true
+        }
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -100,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
                         if (response.isSuccessful && body != null) {
                             if (body.response.beers.items.isNotEmpty()) {
-                                updateBeerDescription(body.response.beers.items[0].beer.beer_description)
+                                updateBeerDescription(body.response.beers.items[0].beer.beer_style)
                             }
                             Log.d(TAG, body.toString())
                         }
@@ -229,5 +247,11 @@ class MainActivity : AppCompatActivity() {
             mutableListOf (
                 Manifest.permission.CAMERA
             ).toTypedArray()
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fl_fragment_container, fragment)
+        transaction.commit()
     }
 }
