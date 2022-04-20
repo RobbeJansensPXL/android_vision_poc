@@ -26,6 +26,7 @@ import be.pxl.android_vision_poc.R
 import be.pxl.android_vision_poc.analyzers.BottleSegmentationAnalyzer
 import be.pxl.android_vision_poc.api.UntappdInstance
 import be.pxl.android_vision_poc.drawers.DetectionDrawer
+import be.pxl.android_vision_poc.room.FavoriteBeerModel
 import be.pxl.android_vision_poc.utils.extractBitmap
 import be.pxl.android_vision_poc.vision.Classifier
 import be.pxl.android_vision_poc.vision.ObjectSegmenter
@@ -78,7 +79,10 @@ class SearchFragment : Fragment() {
         viewBinding = inflater.inflate(R.layout.fragment_search, container, false)
 
         val retrieveInfoButton = viewBinding.findViewById<Button>(R.id.btn_retrieve_info)
-        retrieveInfoButton?.setOnClickListener(infoClickListener)
+        retrieveInfoButton.setOnClickListener(infoClickListener)
+
+        val favoriteButton = viewBinding.findViewById<Button>(R.id.btn_favorite)
+        favoriteButton.setOnClickListener(favoriteClickListener)
 
         // Inflate the layout for this fragment
         return viewBinding
@@ -132,6 +136,16 @@ class SearchFragment : Fragment() {
                             Log.e(MainActivity.TAG, "Response not OK")
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private val favoriteClickListener = View.OnClickListener { view ->
+        when (view.id) {
+            R.id.btn_favorite -> {
+                if (this::latestClassificationName.isInitialized) {
+                    (activity as MainActivity).beerViewModel.insert(FavoriteBeerModel(latestClassificationName))
                 }
             }
         }

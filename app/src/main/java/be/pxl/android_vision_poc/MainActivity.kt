@@ -3,11 +3,14 @@ package be.pxl.android_vision_poc
 import android.Manifest
 import android.os.Bundle
 import android.view.Window
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import be.pxl.android_vision_poc.databinding.ActivityMainBinding
 import be.pxl.android_vision_poc.fragments.FavoritesFragment
 import be.pxl.android_vision_poc.fragments.SearchFragment
+import be.pxl.android_vision_poc.room.BeerApplication
+import be.pxl.android_vision_poc.room.BeerViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +19,10 @@ class MainActivity : AppCompatActivity() {
     private val favoritesFragment = FavoritesFragment()
 
     private lateinit var viewBinding: ActivityMainBinding
+
+    public val beerViewModel: BeerViewModel by viewModels {
+        BeerViewModel.BeerViewModelFactory((application as BeerApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
