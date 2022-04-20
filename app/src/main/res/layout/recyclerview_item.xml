@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/purple_200"
+    app:cardCornerRadius="15dp"
+    android:layout_margin="10dp">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_title"
         style="@style/beer_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_orange_light" />
-</LinearLayout>
+        android:background="@color/purple_200"
+        android:textColor="@color/black"
+        android:gravity="center"/>
+</androidx.cardview.widget.CardView>

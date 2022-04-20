@@ -88,12 +88,6 @@ class SearchFragment : Fragment() {
         return viewBinding
     }
 
-    private fun updateBeerDescription(description: String) {
-        runOnUiThread {
-            viewBinding.findViewById<TextView>(R.id.tv_beer_description)?.text  = description
-        }
-    }
-
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity().applicationContext)
         cameraProviderFuture.addListener(
@@ -128,7 +122,11 @@ class SearchFragment : Fragment() {
 
                         if (response.isSuccessful && body != null) {
                             if (body.response.beers.items.isNotEmpty()) {
-                                updateBeerDescription(body.response.beers.items[0].beer.beer_style)
+                                val beer = body.response.beers.items[0].beer
+                                runOnUiThread {
+                                    viewBinding.findViewById<TextView>(R.id.tv_beer_type)?.text  = "Type: " + beer.beer_style
+                                    viewBinding.findViewById<TextView>(R.id.tv_percentage)?.text = "Percentage: " + beer.beer_abv.toString() + "%"
+                                }
                             }
                             Log.d(MainActivity.TAG, body.toString())
                         }

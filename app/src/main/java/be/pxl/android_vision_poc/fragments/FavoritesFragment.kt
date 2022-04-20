@@ -50,7 +50,7 @@ class BeerListAdapter : ListAdapter<FavoriteBeerModel, BeerListAdapter.BeerViewH
     }
 
     class BeerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val beerItemView: TextView = itemView.findViewById(R.id.textView)
+        private val beerItemView: TextView = itemView.findViewById(R.id.tv_title)
 
         fun bind(text: String?) {
             beerItemView.text = text
